@@ -1,0 +1,24 @@
+name: Update Markdown Links
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  update-markdown:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        
+      - name: Update Markdown File
+        run: |
+          VERSION_TAG=$(echo $GITHUB_REF | awk -F'/' '{print $3}')
+          sed -i "s|{VERSION_TAG}|$VERSION_TAG|g" YOUR_MARKDOWN_FILE.md
+        
+      - name: Commit changes
+        run: |
+          git config --local user.name "GitHub Action"
+          git config --local user.email "action@github.com"
+          git commit -am "Update version tag in Markdown file"
+          git push
